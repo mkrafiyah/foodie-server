@@ -40,6 +40,27 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result)
     })
+
+    //Name
+    app.get('/allFoods/:Name', async (req, res) => {
+
+        const name_in_param = req.params.Name;
+        console.log(name_in_param);
+        const result = await foodCollection.find({ Name: name_in_param }).toArray();
+        console.log(result);
+        res.send(result);
+  
+      })
+
+       //id
+    app.get('/allFoods/:Name/foodDetail/:id', async (req, res) => {
+
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await foodCollection.findOne(query);
+        res.send(result)
+      })
+
     //total count
     app.get('/allFoodsCount', async(req, res)=>{
         const count = await foodCollection.estimatedDocumentCount();
