@@ -30,6 +30,7 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('restaurentManager').collection('allFoods');
+    const orderCollection = client.db('restaurentManager').collection('order');
     
     //total food items
     app.get('/allFoods', async(req, res)=>{
@@ -58,6 +59,13 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
         const result = await foodCollection.findOne(query);
+        res.send(result)
+      })
+
+       //order post
+    app.post('/order', async (req, res) => {
+        const newOrder = req.body;
+        const result = await orderCollection.insertOne(newOrder);
         res.send(result)
       })
 
