@@ -30,11 +30,20 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('restaurentManager').collection('allFoods');
-
+    
+    //total food items
     app.get('/allFoods', async(req, res)=>{
-        const cursor = foodCollection.find();
+        const page = parseInt(req.query.page);
+        const size = parseInt(req.query.size)
+        console.log(page, size)
+        const cursor = foodCollection.find().skip( page * size).limit(size);
         const result = await cursor.toArray();
         res.send(result)
+    })
+    //total count
+    app.get('/allFoodsCount', async(req, res)=>{
+        const count = await foodCollection.estimatedDocumentCount();
+        res.send({count});
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
