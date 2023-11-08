@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -53,19 +53,51 @@ async function run() {
   
       })
 
+      
        //id
     app.get('/allFoods/:Name/foodDetail/:id', async (req, res) => {
 
         const id = req.params.id;
         const query = { _id: new ObjectId(id) }
-        const result = await foodCollection.findOne(query);
+
+        const options = {
+            projection: {price: 1, Quantity: 1, Name: 1, Image: 1, _id: 1}
+        }
+        const result = await foodCollection.findOne(query, options);
         res.send(result)
       })
+      
+      app.get('/foodDetail/:id', async (req, res) => {
+
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await foodCollection.findOne(query);
+        res.send(result)
+      })   
 
        //order post
     app.post('/order', async (req, res) => {
         const newOrder = req.body;
         const result = await orderCollection.insertOne(newOrder);
+        res.send(result)
+      })
+      //order get
+      app.get('/order', async(req, res)=>{
+        console.log(req.query)
+        let query = {}
+        if(req.query?.email){
+            query = {email: req.query.email}
+        }
+        const result = await orderCollection.find(query).toArray();
+        res.send(result);
+      })
+
+      //order delete
+
+    app.delete('/order/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await orderCollection.deleteOne(query);
         res.send(result)
       })
 
