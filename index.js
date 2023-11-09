@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const foodCollection = client.db('restaurentManager').collection('allFoods');
     const orderCollection = client.db('restaurentManager').collection('order');
@@ -136,6 +136,16 @@ async function run() {
         let query = {}
         if(req.query?.email){
             query = {email: req.query.email}
+        }
+        const result = await orderCollection.find(query).toArray();
+        res.send(result);
+      })
+
+      //top order
+      app.get('/order', async(req, res)=>{
+        let query = {}
+        if(req.query?.count){
+            query = {count: req.query.count}
         }
         const result = await orderCollection.find(query).toArray();
         res.send(result);
