@@ -73,11 +73,60 @@ async function run() {
         const query = { _id: new ObjectId(id) }
         const result = await foodCollection.findOne(query);
         res.send(result)
-      })   
+      }) 
+
+      //add new food
+      app.post('/addNewFood', async(req, res)=>{
+        const newFood = req.body;
+        console.log(newFood)
+        const result = await foodCollection.insertOne(newFood);
+        res.send(result);
+      }) 
+
+      //get added products
+      app.get('/addNewFood', async(req, res)=>{
+        console.log(req.query)
+        let query = {}
+        if(req.query?.email){
+            query = {email: req.query.email}
+        }
+        const result = await foodCollection.find(query).toArray();
+        res.send(result);
+      }) 
+
+      //update food
+      app.get('/update/:id', async(req, res)=>{
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await foodCollection.findOne(query)
+        res.send(result)
+      })
+
+      app.put('/update/:name', async(req, res)=>{
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const updatedFood = req.body;
+        const food ={
+            $set:{
+                name: updatedFood.name,
+                image: updatedFood.image,
+                category: updatedFood.category,
+                quantity: updatedFood.quantity,
+                description: updatedFood.description,
+                origin: updatedFood.origin,
+                price: updatedFood.price,
+                email:updatedFood.email
+            }
+        }
+        
+        const result = await foodCollection.updateOne(filter, food, options)
+        res.send(result)
+      })
 
        //order post
     app.post('/order', async (req, res) => {
-        const newOrder = req.body;
+        const newOrder = req.body; 
         const result = await orderCollection.insertOne(newOrder);
         res.send(result)
       })
