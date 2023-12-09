@@ -6,6 +6,6 @@ Technologies used:
 APIs created to--
 * Save food details
 * Update food details
-* Get food by Brand
+* Get food items
 * Order food
 * Delete food
